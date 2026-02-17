@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Notes App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+            font-size: 28px;
+        }
+
+        .note-input {
+            margin-bottom: 25px;
+        }
+
+        .note-input textarea {
+            width: 100%;
+            height: 100px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            transition: 0.3s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .note-input textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .note-input button {
+            width: 100%;
+            margin-top: 12px;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .note-input button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        #notesList {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .note {
+            background: linear-gradient(135deg, #f5f7fa 0%, #f0f2f5 100%);
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            position: relative;
+            border-left: 4px solid #667eea;
+            word-wrap: break-word;
+            line-height: 1.5;
+            color: #333;
+            padding-right: 45px;
+            transition: 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .note:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .delete-btn {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        .delete-btn:hover {
+            background: #ff5252;
+            transform: scale(1.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📝 My Notes</h1>
+
+    <div class="note-input">
+        <textarea id="noteText" placeholder="Write your note here..."></textarea>
+        <button id="addBtn">Add Note</button>
+    </div>
+
+    <div id="notesList">
+        <div class="empty-state">No notes yet. Create one to get started!</div>
+    </div>
+</div>
+
+<script>
+const addBtn = document.getElementById("addBtn");
+const noteText = document.getElementById("noteText");
+const notesList = document.getElementById("notesList");
+
+let noteCount = 0;
+
+addBtn.addEventListener("click", function () {
+    const text = noteText.value.trim();
+
+    if (text === "") return;
+
+    // Remove empty state on first note
+    if (noteCount === 0) {
+        notesList.innerHTML = "";
+    }
+
+    const noteDiv = document.createElement("div");
+    noteDiv.className = "note";
+    noteDiv.innerText = text;
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.innerText = "✕ Delete";
+    deleteBtn.className = "delete-btn";
+
+    deleteBtn.onclick = function () {
+        notesList.removeChild(noteDiv);
+        noteCount--;
+        
+        // Show empty state if no notes left
+        if (noteCount === 0) {
+            notesList.innerHTML = '<div class="empty-state">No notes yet. Create one to get started!</div>';
+        }
+    };
+
+    noteDiv.appendChild(deleteBtn);
+    notesList.appendChild(noteDiv);
+    noteCount++;
+
+    noteText.value = "";
+    noteText.focus();
+});
+
+// Allow Enter key to add note
+noteText.addEventListener("keypress", function(e) {
+    if (e.key === "Enter" && e.ctrlKey) {
+        addBtn.click();
+    }
+});
+</script>
+
+</body>
+</html>
